@@ -1,0 +1,291 @@
+test`${x}`
+"ç"<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Online Telefon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: gece sokakta oyun telefonu — karanlık, parlak ekran
+   IDEA: oyun içi akıllı telefon (özgün tasarım)
+   PICTURE: telefonun kendisi tüm ekranı kaplar
+   COLOUR/TYPE: siyah gövde, lila-gri ekran panelleri, kırmızı kapatma; Chakra Petch
+   LAYOUT: durum çubuğu / başlık / içerik / alt gezinme */
+:root{color-scheme:dark;--ink:#f4f2f8;--panel:linear-gradient(180deg,#d9d2e3 0%,#a79fb4 100%);--panel2:linear-gradient(180deg,#cfc8da,#8c8598);--sel:#5b8ff9;--red:#ff3b30}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;height:100%;background:#000;color:var(--ink);font:600 17px/1.3 "Chakra Petch",system-ui,sans-serif;overflow:hidden}
+.phone{position:fixed;inset:0;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#000}
+@media(min-width:700px){.phone{inset:auto;left:50%;top:50%;width:400px;height:820px;transform:translate(-50%,-50%);border:14px solid #111;border-radius:52px;box-shadow:0 0 0 2px #333,0 30px 80px #0009;overflow:hidden}}
+.status{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 4px;font-size:14px;color:#fff}
+.status .mid{font-size:13px;letter-spacing:.5px;opacity:.85}
+.sig{display:inline-flex;gap:2px;align-items:flex-end;margin-right:6px}.sig i{width:3px;background:#fff;border-radius:1px}
+.bat{display:inline-block;width:24px;height:12px;border:2px solid #fff;border-radius:3px;position:relative;vertical-align:middle;margin-left:6px}.bat::after{content:"";position:absolute;inset:1px;right:30%;background:#fff;border-radius:1px}
+.screen{flex:1;display:flex;flex-direction:column;margin:6px 10px 0;overflow:hidden}
+.bar{display:flex;align-items:center;justify-content:space-between;background:var(--panel);color:#1a1720;padding:10px 14px;font-size:22px;font-weight:700}
+.bar small{font-size:15px}
+.body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#0d0c10}
+/* ana ekran */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:#0d0c10;height:100%}
+.app{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,#2a2731,#16151a);color:#e9e6ef;font-size:14px;border:0;cursor:pointer;min-height:110px}
+.app svg{width:46px;height:46px}
+.app.on{background:linear-gradient(160deg,#4d6fd8,#2c46a8);color:#fff}
+.app:active{filter:brightness(1.3)}
+/* rehber */
+.search{display:flex;gap:8px;padding:8px;background:#17161b}
+.search input{flex:1;font:inherit;font-size:16px;padding:10px 12px;border-radius:6px;border:0;background:#2a2830;color:#fff}
+.row{display:flex;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid #222;cursor:pointer}
+.row.sel{background:var(--sel)}
+.row .name{flex:1;font-size:18px}
+.row .tag{font-size:12px;opacity:.6}
+.av{width:52px;height:52px;border-radius:4px;display:grid;place-items:center;font-size:20px;font-weight:700;color:#fff;overflow:hidden;flex:none;background-size:cover;background-position:center;box-shadow:inset 0 0 0 1px #fff3}
+.letter{padding:4px 12px;font-size:13px;color:#a9a3b6;background:#141317}
+/* arama */
+.call{display:flex;flex-direction:column;height:100%;background:#000}
+.callhead{display:flex;align-items:center;gap:16px;padding:16px;background:linear-gradient(180deg,#0c0b10,#000)}
+.callhead .av{width:110px;height:110px;font-size:40px;border-radius:2px}
+.callhead .st{font-size:22px}
+.stage{flex:1;margin:0 0 0;background:var(--panel2);display:grid;place-items:center;position:relative;overflow:hidden}
+.stage svg{width:46%;max-width:200px;color:#1b1820}
+.wave{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.wave i{position:absolute;width:40%;aspect-ratio:1;border:3px solid #1b182055;border-radius:50%;animation:p 1.8s ease-out infinite;opacity:0}
+.wave i:nth-child(2){animation-delay:.6s}.wave i:nth-child(3){animation-delay:1.2s}
+.idle .wave i{animation:none}
+@keyframes p{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.wave i{animation:none}}
+.sub{position:absolute;left:10px;right:10px;bottom:12px;text-align:center;font-size:15px;color:#1b1820;min-height:20px}
+.tools{display:grid;grid-template-columns:1fr 1fr 1fr;height:64px;background:#0b0a0d;border-top:2px solid #cfc8da}
+.tools div{border-right:1px solid #fff4}
+.tools button{background:none;border:0;display:grid;place-items:center;cursor:pointer}
+.tools svg{width:34px;height:34px;color:var(--red)}
+.timer{font-size:15px;opacity:.75;margin-top:4px}
+/* alt gezinme */
+.nav{display:grid;grid-template-columns:repeat(3,1fr);height:70px;align-items:center;background:#000}
+.nav button{background:none;border:0;color:#fff;height:100%;display:grid;place-items:center;cursor:pointer}
+.nav svg{width:26px;height:26px}
+.nav button:active{opacity:.5}
+.empty{padding:30px 16px;text-align:center;color:#8d879a;font-size:15px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status">
+    <span><span class="sig"><i style="height:5px"></i><i style="height:8px"></i><i style="height:11px"></i><i style="height:14px"></i></span><span id="day"></span></span>
+    <span class="mid" id="clock">00:00</span>
+    <span>4G<span class="bat"></span></span>
+  </div>
+  <div class="screen" id="screen"></div>
+  <nav class="nav">
+    <button id="nSearch" aria-label="Ara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6"/><path d="M15 15l6 6"/></svg></button>
+    <button id="nHome" aria-label="Ana ekran"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></button>
+    <button id="nBack" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button>
+  </nav>
+</div>
+
+<script>
+{
+/* ===== REHBER =====
+   id   -> ses klasörü: sounds/<id>/1.mp3, 2.mp3, 3.mp3 ...  (istediğin kadar)
+           avatar:      avatars/<id>.jpg (veya .png)
+   mode -> "vm"  : çalar, sonra kişinin telesekreter sesi (yoksa "ulaşılamıyor" anonsu)
+           "ans" : kısa çalar, açar ve her aramada rastgele farklı bir ses çalar          */
+const CONTACTS = [
+  ["agatha","Agatha Baker","vm"],["agent14","Agent 14","vm"],["agentulp","Agent ULP","vm"],
+  ["benny","Benny's Motor Works","ans"],["brucie","Brucie Kibbutz","vm"],["charlie","Charlie Reed","vm"],
+  ["dax","Dax","vm"],["dave","English Dave","vm"],["downtowncab","Downtown Cab Co.","ans"],
+  ["franklin","Franklin","vm"],["gerald","Gerald","vm"],["hao","Hao","vm"],["imani","Imani","vm"],
+  ["lamar","Lamar Davis","vm"],["lester","Lester","vm"],["lscustoms","LS Customs","ans"],
+  ["lupe","Lupe","vm"],["malc","Malc","vm"],["madrazo","Martin Madrazo","vm"],
+  ["mechanic","Mechanic","ans"],["merryweather","Merryweather","ans"],["miguel","Miguel Madrazo","vm"],
+  ["moodymann","Moodymann","vm"],["mors","Mors Mutual Insurance","ans"],["paige","Paige Harris","vm"],
+  ["pavel","Pavel","vm"],["pegasus","Pegasus","ans"],["ron","Ron","vm"],["sessanta","Sessanta","vm"],
+  ["simeon","Simeon","vm"],["tony","Tony Prince","vm"],["trevor","Trevor","vm"],
+  ["vincent","Vincent","vm"],["yung","Yung Ancestor","vm"]
+].map(([id,name,mode])=>({id,name,mode}));
+
+const MAX_FILES = 25;          // klasör başına en fazla kaç ses denensin
+const EXTS = ["mp3","m4a","ogg","wav"];
+const COLORS = ["#c0392b","#2c6fbb","#16a085","#8e44ad","#d35400","#2d7d46","#7f6a00","#b03a7a","#34495e"];
+
+const $ = s=>document.querySelector(s);
+const screen = $("#screen");
+const DAYS = ["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+let view = "home", stack = [], selIdx = 0, query = "";
+const soundCache = {}, avatarCache = {}, lastPick = {};
+let ctx, callState = null;
+
+function tick(){const d=new Date();$("#clock").textContent=d.toTimeString().slice(0,5);$("#day").textContent=DAYS[d.getDay()]}
+tick();setInterval(tick,5000);
+
+function initials(n){return n.replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function color(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return COLORS[h%COLORS.length]}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+/* --- dosya tespiti (GitHub Pages'te çalışır) --- */
+async function exists(url){try{const r=await fetch(url,{method:"HEAD",cache:"no-store"});return r.ok}catch{return false}}
+async function findSounds(id){
+  if(soundCache[id])return soundCache[id];
+  const list=[];
+  for(let i=1;i<=MAX_FILES;i++){
+    let found=null;
+    for(const e of EXTS){const u=`sounds/${id}/${i}.${e}`;if(await exists(u)){found=u;break}}
+    if(!found)break;list.push(found);
+  }
+  return soundCache[id]=list;
+}
+async function findAvatar(id){
+  if(id in avatarCache)return avatarCache[id];
+  for(const e of ["jpg","png","webp"]){const u=`avatars/${id}.${e}`;if(await exists(u))return avatarCache[id]=u}
+  return avatarCache[id]=null;
+}
+function avHTML(c,cls=""){return `<div class="av ${cls}" data-av="${c.id}" style="background-color:${color(c.id)}">${initials(c.name)}</div>`}
+function paintAvatars(){
+  document.querySelectorAll("[data-av]").forEach(async el=>{
+    const u=await findAvatar(el.dataset.av);
+    if(u){el.style.backgroundImage=`url("${u}")`;el.textContent=""}
+  });
+}
+
+/* --- ses --- */
+function audio(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume();return ctx}
+function tone(freqs,dur,vol=.12){
+  const a=audio(),t=a.currentTime,g=a.createGain();g.gain.value=0;g.connect(a.destination);
+  g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.setValueAtTime(vol,t+dur-.03);g.gain.linearRampToValueAtTime(0,t+dur);
+  const os=freqs.map(f=>{const o=a.createOscillator();o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+dur);return o});
+  return new Promise(r=>os[0].onended=r);
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function ring(times){
+  for(let i=0;i<times;i++){
+    if(!live())return;
+    if(await exists("sounds/_system/ring.mp3")&&live()){await playFile("sounds/_system/ring.mp3");continue}
+    await tone([425],1.0);if(!live())return;await wait(1300);
+  }
+}
+async function beep(){
+  if(await exists("sounds/_system/beep.mp3"))return playFile("sounds/_system/beep.mp3");
+  return tone([1000],.45,.1);
+}
+let curAudio=null;
+function playFile(u){
+  return new Promise(r=>{
+    const a=new Audio(u);curAudio=a;a.onended=a.onerror=()=>{curAudio=null;r()};
+    a.play().catch(()=>{curAudio=null;r()});
+  });
+}
+function say(text){
+  return new Promise(r=>{
+    if(!("speechSynthesis" in window))return r();
+    const u=new SpeechSynthesisUtterance(text);u.lang="tr-TR";u.rate=1;u.onend=u.onerror=r;
+    speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(r,9000);
+  });
+}
+function pick(id,list){
+  if(list.length===1)return list[0];
+  let i;do{i=Math.floor(Math.random()*list.length)}while(i===lastPick[id]);
+  lastPick[id]=i;return list[i];
+}
+const live=()=>callState&&!callState.ended;
+
+/* --- görünümler --- */
+const APPS=[["Rehber","on",'<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9c0-4 3-6 7-6s7 2 7 6"/>',"contacts"],
+ ["Mesajlar","",'<path d="M4 5h16v11H9l-5 4z"/>'],["E-posta","",'<path d="M3 6h18v12H3zM3 6l9 7 9-7"/>'],
+ ["Görevler","",'<path d="M5 6h14M5 12h14M5 18h9"/>'],["Kamera","",'<path d="M4 8h4l2-2h4l2 2h4v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],
+ ["İnternet","",'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'],
+ ["Ayarlar","",'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>'],
+ ["Takvim","",'<path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/>'],["Hızlı İş","",'<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>']];
+
+function render(){
+  if(view==="home"){
+    screen.innerHTML=`<div class="body"><div class="grid">${APPS.map((a,i)=>`<button class="app ${a[1]}" data-app="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">${a[2]}</svg>${a[0]}</button>`).join("")}</div></div>`;
+  }else if(view==="contacts"){
+    const list=CONTACTS.filter(c=>c.name.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name,"en"));
+    let last="",rows="";
+    list.forEach((c,i)=>{const L=c.name[0].toUpperCase();if(L!==last&&!query){rows+=`<div class="letter">${L}</div>`;last=L}
+      rows+=`<div class="row ${i===selIdx?"sel":""}" data-id="${c.id}">${avHTML(c)}<span class="name">${esc(c.name)}</span></div>`});
+    screen.innerHTML=`<div class="bar">Rehber<small>${CONTACTS.length}</small></div>
+      ${showSearch?`<div class="search"><input id="q" placeholder="Kişi ara…" value="${esc(query)}" autocomplete="off"></div>`:""}
+      <div class="body" id="list">${rows||`<div class="empty">Kimse bulunamadı</div>`}</div>`;
+    const q=$("#q");if(q){q.oninput=e=>{query=e.target.value;selIdx=0;render();const n=$("#q");n.focus();n.setSelectionRange(query.length,query.length)}}
+    paintAvatars();
+  }else if(view==="call"){
+    const c=callState.c;
+    screen.innerHTML=`<div class="bar">${esc(c.name)}<span class="bat" style="border-color:#1a1720"></span></div>
+      <div class="call ${callState.idle?"idle":""}">
+        <div class="callhead">${avHTML(c)}<div><div class="st" id="st">${callState.status}</div><div class="timer" id="tm"></div></div></div>
+        <div class="stage"><div class="wave"><i></i><i></i><i></i></div>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+          <div class="sub" id="sub">${callState.sub||""}</div></div>
+        <div class="tools"><div></div><div></div><button id="hang" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.2.3-4.6.7v3.1c0 .4-.2.7-.6.9-1 .5-1.9 1.1-2.7 1.8-.2.2-.4.3-.7.3s-.5-.1-.7-.3L.3 13.1a1 1 0 0 1 0-1.4C3.3 8.9 7.4 7.2 12 7.2s8.7 1.7 11.7 4.5a1 1 0 0 1 0 1.4l-2.4 2.4c-.2.2-.4.3-.7.3s-.5-.1-.7-.3c-.8-.7-1.7-1.3-2.7-1.8-.3-.2-.6-.5-.6-.9V9.7C15.2 9.3 13.6 9 12 9z"/></svg></button></div>
+      </div>`;
+    $("#hang").onclick=hangup;paintAvatars();
+  }
+}
+function setStatus(s,sub){if(!live())return;callState.status=s;if(sub!==undefined)callState.sub=sub;const e=$("#st");if(e)e.textContent=s;const b=$("#sub");if(b&&sub!==undefined)b.textContent=sub}
+function setIdle(v){callState.idle=v;document.querySelector(".call")?.classList.toggle("idle",v)}
+let showSearch=false;
+
+function go(v){stack.push(view);view=v;render()}
+function back(){if(view==="call"){hangup();return}if(stack.length){view=stack.pop();render()}}
+
+/* --- arama akışı --- */
+async function startCall(c){
+  audio();
+  if("speechSynthesis" in window){const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u)} // iOS kilidini aç
+  callState={c,status:"Aranıyor…",sub:"",ended:false,idle:false};
+  go("call");
+  const files=await findSounds(c.id);
+  if(c.mode==="ans"){
+    await ring(1);if(!live())return;
+    startTimer();setStatus("Bağlandı","");
+    if(files.length){await playFile(pick(c.id,files))}
+    else{setStatus("Bağlandı","(sounds/"+c.id+"/ klasörüne ses ekle)");await tone([660],.25,.08)}
+    if(!live())return;await wait(600);
+  }else{
+    await ring(2+Math.floor(Math.random()*2));if(!live())return;
+    setIdle(true);setStatus("Telesekreter","");
+    if(files.length)await playFile(pick(c.id,files));
+    else{setStatus("Ulaşılamıyor","Şu anda ulaşılamıyor. Lütfen mesaj bırakın.");await say("Aradığınız kişiye şu anda ulaşılamıyor. Lütfen sinyal sesinden sonra mesaj bırakın.")}
+    if(!live())return;await beep();if(!live())return;
+    setStatus("Mesaj kaydediliyor…");startTimer();await wait(4000);
+  }
+  if(live())hangup();
+}
+function startTimer(){const t0=Date.now();callState.tm=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1e3),e=$("#tm");if(e)e.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")},500)}
+function hangup(){
+  if(!callState)return;callState.ended=true;clearInterval(callState.tm);
+  if(curAudio){curAudio.pause();curAudio=null}
+  if("speechSynthesis" in window)speechSynthesis.cancel();
+  callState=null;view=stack.pop()||"contacts";render();
+}
+
+/* --- olaylar --- */
+screen.addEventListener("click",e=>{
+  const a=e.target.closest("[data-app]");if(a){const t=APPS[a.dataset.app][3];if(t){showSearch=false;query="";selIdx=0;go(t)}return}
+  const r=e.target.closest(".row");if(r){
+    const id=r.dataset.id,rows=[...document.querySelectorAll(".row")],i=rows.indexOf(r);
+    if(i===selIdx||matchMedia("(hover:none)").matches){startCall(CONTACTS.find(c=>c.id===id))}
+    else{selIdx=i;rows.forEach((x,j)=>x.classList.toggle("sel",j===i))}
+  }
+});
+$("#nHome").onclick=()=>{if(callState)hangup();stack=[];view="home";render()};
+$("#nBack").onclick=back;
+$("#nSearch").onclick=()=>{if(view!=="contacts"){if(callState)hangup();stack=["home"];view="contacts"}showSearch=!showSearch;if(!showSearch)query="";render();$("#q")?.focus()};
+document.addEventListener("keydown",e=>{
+  if(view!=="contacts"||e.target.id==="q")return;const n=document.querySelectorAll(".row").length;
+  if(e.key==="ArrowDown"){selIdx=Math.min(n-1,selIdx+1);render();document.querySelector(".row.sel")?.scrollIntoView({block:"nearest"})}
+  if(e.key==="ArrowUp"){selIdx=Math.max(0,selIdx-1);render();document.querySelector(".row.sel")?.scrollIntoView({block:"nearest"})}
+  if(e.key==="Enter"){const r=document.querySelector(".row.sel");if(r)r.click(),r.click()}
+  if(e.key==="Backspace"||e.key==="Escape")back();
+});
+render();
+}
+</script>
+</body>
+</html>
