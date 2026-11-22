@@ -1,5 +1,4 @@
-test`${x}`
-"ç"<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8">
@@ -13,76 +12,122 @@ test`${x}`
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE: gece sokakta oyun telefonu — karanlık, parlak ekran
-   IDEA: oyun içi akıllı telefon (özgün tasarım)
-   PICTURE: telefonun kendisi tüm ekranı kaplar
-   COLOUR/TYPE: siyah gövde, lila-gri ekran panelleri, kırmızı kapatma; Chakra Petch
-   LAYOUT: durum çubuğu / başlık / içerik / alt gezinme */
-:root{color-scheme:dark;--ink:#f4f2f8;--panel:linear-gradient(180deg,#d9d2e3 0%,#a79fb4 100%);--panel2:linear-gradient(180deg,#cfc8da,#8c8598);--sel:#5b8ff9;--red:#ff3b30}
+:root{--acc:#3f7be0;--ink:#f4f2f8;--panel:linear-gradient(180deg,#e2dcea,#a79fb4);--wall:linear-gradient(160deg,#1d2b4f,#0b0f1c);--red:#ff3b30;--green:#2fbf5b}
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 html,body{margin:0;height:100%;background:#000;color:var(--ink);font:600 17px/1.3 "Chakra Petch",system-ui,sans-serif;overflow:hidden}
+button{font:inherit;color:inherit}
 .phone{position:fixed;inset:0;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#000}
 @media(min-width:700px){.phone{inset:auto;left:50%;top:50%;width:400px;height:820px;transform:translate(-50%,-50%);border:14px solid #111;border-radius:52px;box-shadow:0 0 0 2px #333,0 30px 80px #0009;overflow:hidden}}
-.status{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 4px;font-size:14px;color:#fff}
-.status .mid{font-size:13px;letter-spacing:.5px;opacity:.85}
+.status{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 4px;font-size:14px}
 .sig{display:inline-flex;gap:2px;align-items:flex-end;margin-right:6px}.sig i{width:3px;background:#fff;border-radius:1px}
-.bat{display:inline-block;width:24px;height:12px;border:2px solid #fff;border-radius:3px;position:relative;vertical-align:middle;margin-left:6px}.bat::after{content:"";position:absolute;inset:1px;right:30%;background:#fff;border-radius:1px}
-.screen{flex:1;display:flex;flex-direction:column;margin:6px 10px 0;overflow:hidden}
-.bar{display:flex;align-items:center;justify-content:space-between;background:var(--panel);color:#1a1720;padding:10px 14px;font-size:22px;font-weight:700}
-.bar small{font-size:15px}
+.bat{display:inline-block;width:24px;height:12px;border:2px solid currentColor;border-radius:3px;position:relative;vertical-align:middle;margin-left:6px}.bat::after{content:"";position:absolute;inset:1px;right:30%;background:currentColor;border-radius:1px}
+.screen{flex:1;display:flex;flex-direction:column;margin:6px 10px 0;overflow:hidden;position:relative}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--panel);color:#1a1720;padding:10px 14px;font-size:22px;font-weight:700;flex:none}
+.bar small{font-size:14px;font-weight:600}
 .body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#0d0c10}
 /* ana ekran */
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:#0d0c10;height:100%}
-.app{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,#2a2731,#16151a);color:#e9e6ef;font-size:14px;border:0;cursor:pointer;min-height:110px}
-.app svg{width:46px;height:46px}
-.app.on{background:linear-gradient(160deg,#4d6fd8,#2c46a8);color:#fff}
-.app:active{filter:brightness(1.3)}
-/* rehber */
-.search{display:flex;gap:8px;padding:8px;background:#17161b}
-.search input{flex:1;font:inherit;font-size:16px;padding:10px 12px;border-radius:6px;border:0;background:#2a2830;color:#fff}
+.home{flex:1;display:flex;flex-direction:column;background:var(--wall)}
+.homebar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0008;font-size:15px}
+.grid{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;padding:6px}
+.app{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#0007;border:2px solid transparent;border-radius:6px;font-size:13px;cursor:pointer}
+.app svg{width:44px;height:44px}
+.app.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 45%,#0008)}
+.badge{position:absolute;top:8px;right:10px;background:var(--red);color:#fff;font-size:12px;min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+/* listeler */
 .row{display:flex;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid #222;cursor:pointer}
-.row.sel{background:var(--sel)}
-.row .name{flex:1;font-size:18px}
-.row .tag{font-size:12px;opacity:.6}
+.row.sel{background:var(--acc)}
+.row .name{flex:1;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .meta{font-size:12px;opacity:.65}
+.row .two{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.row .two span:last-child{font-size:14px;opacity:.7;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unread .two span:first-child::after{content:" •";color:var(--acc)}
 .av{width:52px;height:52px;border-radius:4px;display:grid;place-items:center;font-size:20px;font-weight:700;color:#fff;overflow:hidden;flex:none;background-size:cover;background-position:center;box-shadow:inset 0 0 0 1px #fff3}
 .letter{padding:4px 12px;font-size:13px;color:#a9a3b6;background:#141317}
+.search{display:flex;padding:8px;background:#17161b}
+.search input,.field{flex:1;width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:6px;border:0;background:#2a2830;color:#fff;user-select:text;-webkit-user-select:text}
+.empty{padding:30px 16px;text-align:center;color:#8d879a;font-size:15px}
+.pad{padding:14px}
+/* mesaj */
+.thread{display:flex;flex-direction:column;gap:8px;padding:12px}
+.bub{max-width:80%;padding:9px 12px;border-radius:14px;font-weight:500;font-size:16px;background:#2a2830;align-self:flex-start}
+.bub.me{background:var(--acc);align-self:flex-end}
+.reply{display:flex;gap:8px;padding:8px;background:#17161b}
+.btn{background:var(--acc);border:0;border-radius:6px;padding:10px 14px;cursor:pointer;font-weight:700}
+.btn.ghost{background:#2a2830}
+.mail h3{margin:0 0 4px;font-size:19px}.mail .from{font-size:14px;opacity:.7;margin-bottom:14px}.mail p{font-weight:500;line-height:1.5;margin:0 0 12px}
+/* ayarlar */
+.set{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 12px;border-bottom:1px solid #222;cursor:pointer}
+.set span:last-child{opacity:.75;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;padding:12px}
+.chip{width:56px;height:56px;border-radius:8px;border:3px solid transparent;cursor:pointer}
+.chip.on{border-color:#fff}
+.opt{padding:14px 12px;border-bottom:1px solid #222;cursor:pointer;display:flex;justify-content:space-between}
+.opt.on{background:var(--acc)}
+/* tuş takımı */
+.dial{display:flex;flex-direction:column;height:100%;background:#0d0c10}
+.num{font-size:34px;text-align:center;padding:18px 8px;min-height:80px;letter-spacing:2px;word-break:break-all}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 18px;flex:1}
+.key{background:#1f1d24;border:0;border-radius:50%;aspect-ratio:1;max-height:76px;justify-self:center;width:100%;max-width:76px;font-size:26px;cursor:pointer}
+.key small{display:block;font-size:10px;opacity:.6}
+.dialbar{display:flex;justify-content:center;gap:30px;padding:10px}
+.round{width:64px;height:64px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer}
+.round svg{width:30px;height:30px}
+.round.g{background:var(--green)}.round.r{background:var(--red)}
 /* arama */
-.call{display:flex;flex-direction:column;height:100%;background:#000}
+.call{display:flex;flex-direction:column;flex:1;background:#000;min-height:0}
 .callhead{display:flex;align-items:center;gap:16px;padding:16px;background:linear-gradient(180deg,#0c0b10,#000)}
 .callhead .av{width:110px;height:110px;font-size:40px;border-radius:2px}
 .callhead .st{font-size:22px}
-.stage{flex:1;margin:0 0 0;background:var(--panel2);display:grid;place-items:center;position:relative;overflow:hidden}
-.stage svg{width:46%;max-width:200px;color:#1b1820}
+.stage{flex:1;background:var(--panel);display:grid;place-items:center;position:relative;overflow:hidden}
+.stage>svg{width:42%;max-width:180px;color:#1b1820}
 .wave{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .wave i{position:absolute;width:40%;aspect-ratio:1;border:3px solid #1b182055;border-radius:50%;animation:p 1.8s ease-out infinite;opacity:0}
 .wave i:nth-child(2){animation-delay:.6s}.wave i:nth-child(3){animation-delay:1.2s}
 .idle .wave i{animation:none}
 @keyframes p{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}
-@media(prefers-reduced-motion:reduce){.wave i{animation:none}}
-.sub{position:absolute;left:10px;right:10px;bottom:12px;text-align:center;font-size:15px;color:#1b1820;min-height:20px}
-.tools{display:grid;grid-template-columns:1fr 1fr 1fr;height:64px;background:#0b0a0d;border-top:2px solid #cfc8da}
-.tools div{border-right:1px solid #fff4}
+.sub{position:absolute;left:10px;right:10px;bottom:12px;text-align:center;font-size:15px;color:#1b1820}
+.tools{display:grid;grid-template-columns:1fr 1fr 1fr;height:64px;background:#0b0a0d;border-top:2px solid #cfc8da;flex:none}
+.tools>*{border-right:1px solid #fff4}
 .tools button{background:none;border:0;display:grid;place-items:center;cursor:pointer}
-.tools svg{width:34px;height:34px;color:var(--red)}
+.tools svg{width:34px;height:34px}
 .timer{font-size:15px;opacity:.75;margin-top:4px}
+/* kamera / sinyal */
+.cam{flex:1;position:relative;background:#000;overflow:hidden}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .shot{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:70px;height:70px;border-radius:50%;border:5px solid #fff;background:#fff4;cursor:pointer}
+.cam .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s}
+.gal{display:flex;gap:6px;padding:6px;overflow-x:auto;background:#111;min-height:70px}
+.gal img{height:60px;border-radius:4px}
+.radar{flex:1;display:grid;place-items:center;background:#06120a}
+.radar canvas{width:min(90%,340px);aspect-ratio:1}
+.meter{padding:12px;text-align:center;background:#0b1a10;color:#7dffa2;font-size:20px}
+/* internet */
+.site{padding:16px;font-weight:500}
+.site h2{margin:0 0 10px;font-size:24px}
+.tick{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #333}
+.up{color:#3ddc84}.down{color:#ff5a52}
 /* alt gezinme */
-.nav{display:grid;grid-template-columns:repeat(3,1fr);height:70px;align-items:center;background:#000}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);height:68px;align-items:center;background:#000;flex:none}
 .nav button{background:none;border:0;color:#fff;height:100%;display:grid;place-items:center;cursor:pointer}
 .nav svg{width:26px;height:26px}
 .nav button:active{opacity:.5}
-.empty{padding:30px 16px;text-align:center;color:#8d879a;font-size:15px}
+.toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:#000d;border:1px solid var(--acc);padding:10px 16px;border-radius:8px;font-size:15px;white-space:nowrap;z-index:5;animation:t 2.4s forwards}
+@keyframes t{0%,85%{opacity:1}100%{opacity:0}}
+.spin{display:inline-block;width:14px;height:14px;border:3px solid #fff4;border-top-color:#fff;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.wave i,.spin{animation:none}}
 </style>
 </head>
 <body>
 <div class="phone">
   <div class="status">
     <span><span class="sig"><i style="height:5px"></i><i style="height:8px"></i><i style="height:11px"></i><i style="height:14px"></i></span><span id="day"></span></span>
-    <span class="mid" id="clock">00:00</span>
+    <span id="clock">00:00</span>
     <span>4G<span class="bat"></span></span>
   </div>
   <div class="screen" id="screen"></div>
   <nav class="nav">
-    <button id="nSearch" aria-label="Ara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6"/><path d="M15 15l6 6"/></svg></button>
+    <button id="nSearch" aria-label="Tuş takımı / ara"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6"/><path d="M15 15l6 6"/></svg></button>
     <button id="nHome" aria-label="Ana ekran"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></button>
     <button id="nBack" aria-label="Geri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button>
   </nav>
@@ -90,198 +135,353 @@ html,body{margin:0;height:100%;background:#000;color:var(--ink);font:600 17px/1.
 
 <script>
 {
-/* ===== REHBER =====
-   id   -> ses klasörü: sounds/<id>/1.mp3, 2.mp3, 3.mp3 ...  (istediğin kadar)
-           avatar:      avatars/<id>.jpg (veya .png)
-   mode -> "vm"  : çalar, sonra kişinin telesekreter sesi (yoksa "ulaşılamıyor" anonsu)
-           "ans" : kısa çalar, açar ve her aramada rastgele farklı bir ses çalar          */
-const CONTACTS = [
-  ["agatha","Agatha Baker","vm"],["agent14","Agent 14","vm"],["agentulp","Agent ULP","vm"],
-  ["benny","Benny's Motor Works","ans"],["brucie","Brucie Kibbutz","vm"],["charlie","Charlie Reed","vm"],
-  ["dax","Dax","vm"],["dave","English Dave","vm"],["downtowncab","Downtown Cab Co.","ans"],
-  ["franklin","Franklin","vm"],["gerald","Gerald","vm"],["hao","Hao","vm"],["imani","Imani","vm"],
-  ["lamar","Lamar Davis","vm"],["lester","Lester","vm"],["lscustoms","LS Customs","ans"],
-  ["lupe","Lupe","vm"],["malc","Malc","vm"],["madrazo","Martin Madrazo","vm"],
-  ["mechanic","Mechanic","ans"],["merryweather","Merryweather","ans"],["miguel","Miguel Madrazo","vm"],
-  ["moodymann","Moodymann","vm"],["mors","Mors Mutual Insurance","ans"],["paige","Paige Harris","vm"],
-  ["pavel","Pavel","vm"],["pegasus","Pegasus","ans"],["ron","Ron","vm"],["sessanta","Sessanta","vm"],
-  ["simeon","Simeon","vm"],["tony","Tony Prince","vm"],["trevor","Trevor","vm"],
-  ["vincent","Vincent","vm"],["yung","Yung Ancestor","vm"]
+/* ================== REHBER ==================
+   id   -> ses: sounds/<id>/1.mp3, 2.mp3 ...   avatar: avatars/<id>.jpg
+   mode -> "vm" çalar → telesekreter | "ans" açar → her seferinde rastgele ses       */
+const CONTACTS=[
+ ["agatha","Agatha Baker","vm"],["agent14","Agent 14","vm"],["agentulp","Agent ULP","vm"],
+ ["benny","Benny's Motor Works","ans"],["brucie","Brucie Kibbutz","vm"],["bryony","Bryony","vm"],
+ ["charlie","Charlie Reed","vm"],["dax","Dax","vm"],["dave","English Dave","vm"],
+ ["downtowncab","Downtown Cab Co.","ans"],["franklin","Franklin","vm"],["gerald","Gerald","vm"],
+ ["hao","Hao","vm"],["imani","Imani","vm"],["lamar","Lamar Davis","vm"],["lester","Lester","vm"],
+ ["lscustoms","LS Customs","ans"],["lupe","Lupe","vm"],["malc","Malc","vm"],
+ ["madrazo","Martin Madrazo","vm"],["mechanic","Mechanic","ans"],["merryweather","Merryweather","ans"],
+ ["miguel","Miguel Madrazo","vm"],["moodymann","Moodymann","vm"],["mors","Mors Mutual Insurance","ans"],
+ ["paige","Paige Harris","vm"],["pavel","Pavel","vm"],["pegasus","Pegasus","ans"],
+ ["assistant","Personal Assistant","ans"],["ron","Ron","vm"],["sessanta","Sessanta","vm"],
+ ["simeon","Simeon","vm"],["tony","Tony Prince","vm"],["trevor","Trevor","vm"],
+ ["vincent","Vincent","vm"],["yung","Yung Ancestor","vm"]
 ].map(([id,name,mode])=>({id,name,mode}));
+const byId=id=>CONTACTS.find(c=>c.id===id);
 
-const MAX_FILES = 25;          // klasör başına en fazla kaç ses denensin
-const EXTS = ["mp3","m4a","ogg","wav"];
-const COLORS = ["#c0392b","#2c6fbb","#16a085","#8e44ad","#d35400","#2d7d46","#7f6a00","#b03a7a","#34495e"];
+/* Örnek mesaj ve e-postalar (istediğin gibi değiştir) */
+const MSGS=[
+ {from:"lester",unread:true,t:["Yeni bir iş var. Müsait olunca ara.","Telefonda konuşmayalım, kısa tut."]},
+ {from:"lamar",unread:true,t:["Kanka nerdesin?","Bi tur atalım mı, araba bende."]},
+ {from:"simeon",t:["Galeriye yeni araçlar geldi, bi uğra."]},
+ {from:"mechanic",t:["Aracın hazır. İstediğin yere bırakırım."]},
+ {from:"agent14",t:["Yeni bir görev için bilgi gönderdim. E-postanı kontrol et."]}
+];
+const MAILS=[
+ {from:"Agent 14",subj:"Görev bilgisi",unread:true,body:["Merhaba,","Bir sonraki operasyonun ayrıntıları ekte. Hazır olduğunda bana dön.","Dikkatli ol."]},
+ {from:"Mors Mutual Insurance",subj:"Poliçe yenileme",body:["Sayın müşterimiz,","Araç sigortanız yenilenmiştir. Hasar durumunda bizi arayabilirsiniz."]},
+ {from:"Ünlü Oto Galeri",subj:"Haftanın fırsatları",body:["Bu haftaya özel indirimli araçlarımıza göz atın.","Stoklar sınırlıdır."]}
+];
+const JOBS=[["Yarış","Şehir turu — 8 oyuncu"],["Ölüm Maçı","Liman — takım"],["Kontak Görevi","Teslimat işi"],["Soygun","Hazırlık görevi"],["Sağ Kal","Dalga modu"]];
 
-const $ = s=>document.querySelector(s);
-const screen = $("#screen");
-const DAYS = ["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
-let view = "home", stack = [], selIdx = 0, query = "";
-const soundCache = {}, avatarCache = {}, lastPick = {};
-let ctx, callState = null;
+const THEMES=[["Mavi","#3f7be0"],["Yeşil","#2fa35a"],["Kırmızı","#d63a3a"],["Turuncu","#e07a1f"],["Mor","#8a4ad6"],["Pembe","#d64a9a"],["Gri","#6b6f7a"]];
+const WALLS=["linear-gradient(160deg,#1d2b4f,#0b0f1c)","linear-gradient(160deg,#4a1d3f,#120a14)","linear-gradient(160deg,#173d2c,#07120d)","radial-gradient(circle at 30% 20%,#e07a1f,#3a1208 70%)","linear-gradient(160deg,#2b2b2b,#050505)","linear-gradient(180deg,#1b6f9e,#0d2a44 60%,#e0a24a)"];
+const RINGS=["Klasik","Bip Bip","Melodi","Retro"];
+
+const MAX_FILES=25,EXTS=["mp3","m4a","ogg","wav"];
+const COLORS=["#c0392b","#2c6fbb","#16a085","#8e44ad","#d35400","#2d7d46","#7f6a00","#b03a7a","#34495e"];
+const DAYS=["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+const $=s=>document.querySelector(s);
+const screen=$("#screen");
+
+/* ayarlar (cihazda saklanır) */
+let S={theme:0,wall:0,ring:0,vib:true,incoming:false};
+try{Object.assign(S,JSON.parse(localStorage.getItem("tel-ayar")||"{}"))}catch{}
+function save(){try{localStorage.setItem("tel-ayar",JSON.stringify(S))}catch{}applyTheme()}
+function applyTheme(){document.documentElement.style.setProperty("--acc",THEMES[S.theme][1]);document.documentElement.style.setProperty("--wall",WALLS[S.wall])}
+applyTheme();
+
+let view="home",stack=[],sel=0,query="",showSearch=false,num="",param=null;
+const soundCache={},avatarCache={},lastPick={};
+let ctx,callState=null,gallery=[],camStream=null,radarRAF=0,stockTimer=0,incomingTimer=0;
 
 function tick(){const d=new Date();$("#clock").textContent=d.toTimeString().slice(0,5);$("#day").textContent=DAYS[d.getDay()]}
 tick();setInterval(tick,5000);
 
-function initials(n){return n.replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+const initials=n=>n.replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 function color(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))>>>0;return COLORS[h%COLORS.length]}
-function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function toast(html){const t=document.createElement("div");t.className="toast";t.innerHTML=html;screen.appendChild(t);setTimeout(()=>t.remove(),2500)}
 
-/* --- dosya tespiti (GitHub Pages'te çalışır) --- */
-async function exists(url){try{const r=await fetch(url,{method:"HEAD",cache:"no-store"});return r.ok}catch{return false}}
+/* ---- dosya tespiti ---- */
+async function exists(u){try{const r=await fetch(u,{method:"HEAD",cache:"no-store"});return r.ok}catch{return false}}
 async function findSounds(id){
-  if(soundCache[id])return soundCache[id];
-  const list=[];
-  for(let i=1;i<=MAX_FILES;i++){
-    let found=null;
-    for(const e of EXTS){const u=`sounds/${id}/${i}.${e}`;if(await exists(u)){found=u;break}}
-    if(!found)break;list.push(found);
-  }
+  if(soundCache[id])return soundCache[id];const list=[];
+  for(let i=1;i<=MAX_FILES;i++){let f=null;for(const e of EXTS){const u=`sounds/${id}/${i}.${e}`;if(await exists(u)){f=u;break}}if(!f)break;list.push(f)}
   return soundCache[id]=list;
 }
 async function findAvatar(id){
   if(id in avatarCache)return avatarCache[id];
-  for(const e of ["jpg","png","webp"]){const u=`avatars/${id}.${e}`;if(await exists(u))return avatarCache[id]=u}
+  for(const e of["jpg","png","webp"]){const u=`avatars/${id}.${e}`;if(await exists(u))return avatarCache[id]=u}
   return avatarCache[id]=null;
 }
-function avHTML(c,cls=""){return `<div class="av ${cls}" data-av="${c.id}" style="background-color:${color(c.id)}">${initials(c.name)}</div>`}
-function paintAvatars(){
-  document.querySelectorAll("[data-av]").forEach(async el=>{
-    const u=await findAvatar(el.dataset.av);
-    if(u){el.style.backgroundImage=`url("${u}")`;el.textContent=""}
-  });
-}
+const avHTML=c=>`<div class="av" data-av="${c.id}" style="background-color:${color(c.id)}">${initials(c.name)}</div>`;
+function paintAvatars(){document.querySelectorAll("[data-av]").forEach(async el=>{const u=await findAvatar(el.dataset.av);if(u){el.style.backgroundImage=`url("${u}")`;el.textContent=""}})}
 
-/* --- ses --- */
-function audio(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume();return ctx}
-function tone(freqs,dur,vol=.12){
+/* ---- ses motoru ---- */
+function audio(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume();return ctx}
+function tone(freqs,dur,vol=.12,type="sine"){
   const a=audio(),t=a.currentTime,g=a.createGain();g.gain.value=0;g.connect(a.destination);
-  g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.setValueAtTime(vol,t+dur-.03);g.gain.linearRampToValueAtTime(0,t+dur);
-  const os=freqs.map(f=>{const o=a.createOscillator();o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+dur);return o});
+  g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.setValueAtTime(vol,t+Math.max(.03,dur-.03));g.gain.linearRampToValueAtTime(0,t+dur);
+  const os=freqs.map(f=>{const o=a.createOscillator();o.type=type;o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+dur);return o});
   return new Promise(r=>os[0].onended=r);
 }
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
-async function ring(times){
-  for(let i=0;i<times;i++){
-    if(!live())return;
-    if(await exists("sounds/_system/ring.mp3")&&live()){await playFile("sounds/_system/ring.mp3");continue}
-    await tone([425],1.0);if(!live())return;await wait(1300);
-  }
-}
-async function beep(){
-  if(await exists("sounds/_system/beep.mp3"))return playFile("sounds/_system/beep.mp3");
-  return tone([1000],.45,.1);
+async function ringtoneOnce(i){
+  if(i===0){for(let k=0;k<6;k++){await tone([k%2?1100:880],.09,.1)}}
+  else if(i===1){for(let k=0;k<3;k++){await tone([1250],.12,.1,"square");await wait(90)}}
+  else if(i===2){for(const f of[523,659,784,1047,784,659])await tone([f],.13,.1,"triangle")}
+  else{await tone([440,660],.25,.07,"square");await tone([330,495],.25,.07,"square")}
 }
 let curAudio=null;
-function playFile(u){
-  return new Promise(r=>{
-    const a=new Audio(u);curAudio=a;a.onended=a.onerror=()=>{curAudio=null;r()};
-    a.play().catch(()=>{curAudio=null;r()});
-  });
-}
-function say(text){
-  return new Promise(r=>{
-    if(!("speechSynthesis" in window))return r();
-    const u=new SpeechSynthesisUtterance(text);u.lang="tr-TR";u.rate=1;u.onend=u.onerror=r;
-    speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(r,9000);
-  });
-}
-function pick(id,list){
-  if(list.length===1)return list[0];
-  let i;do{i=Math.floor(Math.random()*list.length)}while(i===lastPick[id]);
-  lastPick[id]=i;return list[i];
-}
+function playFile(u){return new Promise(r=>{const a=new Audio(u);curAudio=a;a.onended=a.onerror=()=>{curAudio=null;r()};a.play().catch(()=>{curAudio=null;r()})})}
+function say(text){return new Promise(r=>{if(!("speechSynthesis"in window))return r();const u=new SpeechSynthesisUtterance(text);u.lang="tr-TR";u.onend=u.onerror=r;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(r,9000)})}
+function pick(id,l){if(l.length===1)return l[0];let i;do{i=Math.floor(Math.random()*l.length)}while(i===lastPick[id]);lastPick[id]=i;return l[i]}
 const live=()=>callState&&!callState.ended;
+async function ringback(n){for(let i=0;i<n;i++){if(!live())return;if(await exists("sounds/_system/ring.mp3")&&live()){await playFile("sounds/_system/ring.mp3");continue}await tone([425],1);if(!live())return;await wait(1300)}}
+async function beep(){if(await exists("sounds/_system/beep.mp3"))return playFile("sounds/_system/beep.mp3");return tone([1000],.45,.1)}
 
-/* --- görünümler --- */
-const APPS=[["Rehber","on",'<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9c0-4 3-6 7-6s7 2 7 6"/>',"contacts"],
- ["Mesajlar","",'<path d="M4 5h16v11H9l-5 4z"/>'],["E-posta","",'<path d="M3 6h18v12H3zM3 6l9 7 9-7"/>'],
- ["Görevler","",'<path d="M5 6h14M5 12h14M5 18h9"/>'],["Kamera","",'<path d="M4 8h4l2-2h4l2 2h4v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],
- ["İnternet","",'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'],
- ["Ayarlar","",'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>'],
- ["Takvim","",'<path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/>'],["Hızlı İş","",'<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>']];
+/* ---- uygulamalar ---- */
+const I={
+ msg:'<path d="M4 5h16v11H9l-5 4z"/>',mail:'<path d="M3 6h18v12H3zM3 6l9 7 9-7"/>',contacts:'<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-7 9c0-4 3-6 7-6s7 2 7 6"/>',
+ jobs:'<path d="M9 5h11M9 12h11M9 19h11"/><path d="M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/>',save:'<path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 14h8v7H8z"/>',
+ settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+ camera:'<path d="M4 8h4l2-2h4l2 2h4v11H4z"/><circle cx="12" cy="13" r="3.5"/>',web:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+ track:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>'};
+const APPS=[["Mesajlar","msg","messages"],["E-posta","mail","email"],["Rehber","contacts","contacts"],
+ ["Görevler","jobs","jobs"],["Hızlı Kayıt","save","quicksave"],["Ayarlar","settings","settings"],
+ ["Kamera","camera","camera"],["İnternet","web","internet"],["Sinyal","track","tracker"]];
+const svg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">${I[k]}</svg>`;
+const bar=(t,r="")=>`<div class="bar">${esc(t)}<small>${r}</small></div>`;
+const unreadMsgs=()=>MSGS.filter(m=>m.unread).length,unreadMails=()=>MAILS.filter(m=>m.unread).length;
 
+const SITES=[
+ {n:"Borsa",d:"Canlı hisse fiyatları"},{n:"LS Haber",d:"Şehirden son dakika"},
+ {n:"Hava Durumu",d:"Bugün ve yarın"},{n:"Oto Pazarı",d:"Satılık araçlar"}];
+const STOCKS=[["KRMX",112.4],["VLTA",54.1],["PNTR",8.75],["ORBK",231.9],["DZLN",17.3],["MRVA",76.6]].map(([s,p])=>({s,p,c:0}));
+const NEWS=["Otoyolda yoğun trafik: sürücüler alternatif rotalara yöneldi.","Liman bölgesinde yeni sahil parkı açıldı.","Şehirdeki araç modifiye fuarı bu hafta sonu başlıyor.","Yerel radyo yeni sabah programını duyurdu."];
+const CARS=[["Spor coupe","$ 195.000"],["Arazi aracı","$ 88.000"],["Süper motor","$ 42.500"],["Klasik muscle","$ 120.000"]];
+
+function stopSide(){
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}
+  cancelAnimationFrame(radarRAF);clearInterval(stockTimer);
+}
 function render(){
-  if(view==="home"){
-    screen.innerHTML=`<div class="body"><div class="grid">${APPS.map((a,i)=>`<button class="app ${a[1]}" data-app="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">${a[2]}</svg>${a[0]}</button>`).join("")}</div></div>`;
-  }else if(view==="contacts"){
+  stopSide();
+  let h="";
+  switch(view){
+  case"home":{
+    const d=new Date();
+    h=`<div class="home"><div class="homebar"><span>${d.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</span><span>${d.toTimeString().slice(0,5)}</span></div>
+    <div class="grid">${APPS.map((a,i)=>{const b=a[2]==="messages"?unreadMsgs():a[2]==="email"?unreadMails():0;
+      return`<button class="app ${i===sel?"sel":""}" data-app="${i}">${b?`<span class="badge">${b}</span>`:""}${svg(a[1])}${a[0]}</button>`}).join("")}</div></div>`;
+    break}
+  case"contacts":{
     const list=CONTACTS.filter(c=>c.name.toLowerCase().includes(query.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name,"en"));
     let last="",rows="";
     list.forEach((c,i)=>{const L=c.name[0].toUpperCase();if(L!==last&&!query){rows+=`<div class="letter">${L}</div>`;last=L}
-      rows+=`<div class="row ${i===selIdx?"sel":""}" data-id="${c.id}">${avHTML(c)}<span class="name">${esc(c.name)}</span></div>`});
-    screen.innerHTML=`<div class="bar">Rehber<small>${CONTACTS.length}</small></div>
-      ${showSearch?`<div class="search"><input id="q" placeholder="Kişi ara…" value="${esc(query)}" autocomplete="off"></div>`:""}
-      <div class="body" id="list">${rows||`<div class="empty">Kimse bulunamadı</div>`}</div>`;
-    const q=$("#q");if(q){q.oninput=e=>{query=e.target.value;selIdx=0;render();const n=$("#q");n.focus();n.setSelectionRange(query.length,query.length)}}
-    paintAvatars();
-  }else if(view==="call"){
-    const c=callState.c;
-    screen.innerHTML=`<div class="bar">${esc(c.name)}<span class="bat" style="border-color:#1a1720"></span></div>
-      <div class="call ${callState.idle?"idle":""}">
-        <div class="callhead">${avHTML(c)}<div><div class="st" id="st">${callState.status}</div><div class="timer" id="tm"></div></div></div>
-        <div class="stage"><div class="wave"><i></i><i></i><i></i></div>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
-          <div class="sub" id="sub">${callState.sub||""}</div></div>
-        <div class="tools"><div></div><div></div><button id="hang" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.2.3-4.6.7v3.1c0 .4-.2.7-.6.9-1 .5-1.9 1.1-2.7 1.8-.2.2-.4.3-.7.3s-.5-.1-.7-.3L.3 13.1a1 1 0 0 1 0-1.4C3.3 8.9 7.4 7.2 12 7.2s8.7 1.7 11.7 4.5a1 1 0 0 1 0 1.4l-2.4 2.4c-.2.2-.4.3-.7.3s-.5-.1-.7-.3c-.8-.7-1.7-1.3-2.7-1.8-.3-.2-.6-.5-.6-.9V9.7C15.2 9.3 13.6 9 12 9z"/></svg></button></div>
-      </div>`;
-    $("#hang").onclick=hangup;paintAvatars();
+      rows+=`<div class="row ${i===sel?"sel":""}" data-call="${c.id}">${avHTML(c)}<span class="name">${esc(c.name)}</span></div>`});
+    h=bar("Rehber",CONTACTS.length)+(showSearch?`<div class="search"><input id="q" placeholder="Kişi ara…" value="${esc(query)}" autocomplete="off"></div>`:"")
+     +`<div class="body">${rows||'<div class="empty">Kimse bulunamadı</div>'}</div>`;
+    break}
+  case"dialer":
+    h=bar("Tuş Takımı")+`<div class="dial"><div class="num" id="num">${esc(num)||"&nbsp;"}</div>
+     <div class="keys">${[["1",""],["2","ABC"],["3","DEF"],["4","GHI"],["5","JKL"],["6","MNO"],["7","PQRS"],["8","TUV"],["9","WXYZ"],["*",""],["0","+"],["#",""]].map(k=>`<button class="key" data-key="${k[0]}">${k[0]}<small>${k[1]||"&nbsp;"}</small></button>`).join("")}</div>
+     <div class="dialbar"><button class="round g" id="dialGo" aria-label="Ara">${phoneSvg()}</button><button class="round" style="background:#2a2830" id="dialDel" aria-label="Sil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M8 5h12v14H8l-6-7zM12 9l5 6M17 9l-5 6"/></svg></button></div></div>`;
+    break;
+  case"messages":
+    h=bar("Mesajlar",MSGS.length)+`<div class="body">${MSGS.map((m,i)=>{const c=byId(m.from);return`<div class="row ${m.unread?"unread":""} ${i===sel?"sel":""}" data-msg="${i}">${avHTML(c)}<div class="two"><span>${esc(c.name)}</span><span>${esc(m.t[m.t.length-1])}</span></div></div>`}).join("")}</div>`;
+    break;
+  case"thread":{
+    const m=MSGS[param],c=byId(m.from);m.unread=false;
+    h=bar(c.name)+`<div class="body" id="th"><div class="thread">${m.t.map(x=>typeof x==="string"?`<div class="bub">${esc(x)}</div>`:`<div class="bub me">${esc(x.me)}</div>`).join("")}</div></div>
+     <div class="reply"><input class="field" id="rep" placeholder="Mesaj yaz…" autocomplete="off"><button class="btn" id="send">Gönder</button><button class="btn ghost" id="tcall" aria-label="Ara">${phoneSvg(20)}</button></div>`;
+    break}
+  case"email":
+    h=bar("E-posta",MAILS.length)+`<div class="body">${MAILS.map((m,i)=>`<div class="row ${m.unread?"unread":""} ${i===sel?"sel":""}" data-mail="${i}"><div class="two"><span>${esc(m.from)}</span><span>${esc(m.subj)}</span></div></div>`).join("")}</div>`;
+    break;
+  case"mail":{
+    const m=MAILS[param];m.unread=false;
+    h=bar("E-posta")+`<div class="body pad mail"><h3>${esc(m.subj)}</h3><div class="from">${esc(m.from)}</div>${m.body.map(p=>`<p>${esc(p)}</p>`).join("")}</div>`;
+    break}
+  case"jobs":
+    h=bar("Görevler")+`<div class="body">${JOBS.map((j,i)=>`<div class="row ${i===sel?"sel":""}" data-job="${i}"><div class="two"><span>${esc(j[0])}</span><span>${esc(j[1])}</span></div><span class="meta">Davet</span></div>`).join("")}</div>`;
+    break;
+  case"settings":
+    h=bar("Ayarlar")+`<div class="body">
+     <div class="set" data-go="s-ring"><span>Zil sesi</span><span>${RINGS[S.ring]}</span></div>
+     <div class="set" data-tog="vib"><span>Titreşim</span><span>${S.vib?"Açık":"Kapalı"}</span></div>
+     <div class="set" data-go="s-theme"><span>Tema rengi</span><span>${THEMES[S.theme][0]}</span></div>
+     <div class="set" data-go="s-wall"><span>Duvar kağıdı</span><span>${S.wall+1}</span></div>
+     <div class="set" data-tog="incoming"><span>Rastgele gelen aramalar</span><span>${S.incoming?"Açık":"Kapalı"}</span></div>
+     <div class="set" id="testIn"><span>Gelen aramayı dene</span><span>›</span></div></div>`;
+    break;
+  case"s-ring":
+    h=bar("Zil sesi")+`<div class="body">${RINGS.map((r,i)=>`<div class="opt ${i===S.ring?"on":""}" data-ring="${i}"><span>${r}</span><span>${i===S.ring?"✓":""}</span></div>`).join("")}</div>`;
+    break;
+  case"s-theme":
+    h=bar("Tema rengi")+`<div class="body"><div class="chips">${THEMES.map((t,i)=>`<button class="chip ${i===S.theme?"on":""}" style="background:${t[1]}" data-theme="${i}" aria-label="${t[0]}"></button>`).join("")}</div></div>`;
+    break;
+  case"s-wall":
+    h=bar("Duvar kağıdı")+`<div class="body"><div class="chips">${WALLS.map((w,i)=>`<button class="chip ${i===S.wall?"on":""}" style="background:${w};width:80px;height:120px" data-wall="${i}" aria-label="Duvar kağıdı ${i+1}"></button>`).join("")}</div></div>`;
+    break;
+  case"camera":
+    h=bar("Kamera",gallery.length?gallery.length+" foto":"")+`<div class="cam"><video id="vid" autoplay playsinline muted></video><div class="flash" id="flash"></div><button class="shot" id="shot" aria-label="Fotoğraf çek"></button></div>
+     <div class="gal">${gallery.map(g=>`<img src="${g}" alt="">`).join("")||'<span class="empty" style="padding:20px">Henüz fotoğraf yok</span>'}</div>`;
+    break;
+  case"internet":
+    h=bar("İnternet")+`<div class="search"><input class="field" placeholder="www." autocomplete="off" id="url"></div><div class="body">${SITES.map((s,i)=>`<div class="row ${i===sel?"sel":""}" data-site="${i}"><div class="two"><span>${s.n}</span><span>${s.d}</span></div></div>`).join("")}</div>`;
+    break;
+  case"site":{
+    const s=SITES[param].n;let c="";
+    if(s==="Borsa")c=`<div id="stocks"></div>`;
+    else if(s==="LS Haber")c=NEWS.map(n=>`<p style="border-bottom:1px solid #333;padding-bottom:10px">${n}</p>`).join("");
+    else if(s==="Hava Durumu")c=`<p style="font-size:44px;margin:10px 0">24°</p><p>Güneşli, hafif rüzgar.</p><p>Yarın: 22° parçalı bulutlu</p>`;
+    else c=CARS.map(x=>`<div class="tick"><span>${x[0]}</span><span>${x[1]}</span></div>`).join("");
+    h=bar(s)+`<div class="body site"><h2>${s}</h2>${c}<p class="meta" style="margin-top:20px;opacity:.6">Örnek içerik</p></div>`;
+    break}
+  case"tracker":
+    h=bar("Sinyal Takip")+`<div class="radar"><canvas id="rad" width="600" height="600"></canvas></div><div class="meter" id="dist">Sinyal aranıyor…</div>`;
+    break;
+  case"call":case"incoming":h=callHTML();break;
   }
+  screen.innerHTML=h;
+  after();
 }
+const phoneSvg=(s=30)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>`;
+const hangSvg='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.2.3-4.6.7v3.1c0 .4-.2.7-.6.9-1 .5-1.9 1.1-2.7 1.8-.2.2-.4.3-.7.3s-.5-.1-.7-.3L.3 13.1a1 1 0 0 1 0-1.4C3.3 8.9 7.4 7.2 12 7.2s8.7 1.7 11.7 4.5a1 1 0 0 1 0 1.4l-2.4 2.4c-.2.2-.4.3-.7.3s-.5-.1-.7-.3c-.8-.7-1.7-1.3-2.7-1.8-.3-.2-.6-.5-.6-.9V9.7C15.2 9.3 13.6 9 12 9z"/></svg>';
+function callHTML(){
+  const c=callState.c,inc=view==="incoming";
+  return bar(c.name)+`<div class="call ${callState.idle?"idle":""}">
+   <div class="callhead">${avHTML(c)}<div><div class="st" id="st">${esc(callState.status)}</div><div class="timer" id="tm"></div></div></div>
+   <div class="stage"><div class="wave"><i></i><i></i><i></i></div>${phoneSvg(160).replace('width="160" height="160"','')}<div class="sub" id="sub">${esc(callState.sub||"")}</div></div>
+   <div class="tools">${inc?`<button id="accept" aria-label="Aç" style="color:var(--green)">${phoneSvg(34)}</button><div></div>`:"<div></div><div></div>"}<button id="hang" aria-label="Kapat" style="color:var(--red)">${hangSvg}</button></div></div>`;
+}
+function after(){
+  paintAvatars();
+  const q=$("#q");if(q)q.oninput=e=>{query=e.target.value;sel=0;render();const n=$("#q");n.focus();n.setSelectionRange(query.length,query.length)};
+  if($("#hang"))$("#hang").onclick=hangup;
+  if($("#accept"))$("#accept").onclick=acceptIncoming;
+  if(view==="thread"){const th=$("#th");th.scrollTop=th.scrollHeight;const send=()=>{const v=$("#rep").value.trim();if(!v)return;MSGS[param].t.push({me:v});render();tone([880],.08,.06)};$("#send").onclick=send;$("#rep").onkeydown=e=>{if(e.key==="Enter")send()};$("#tcall").onclick=()=>startCall(byId(MSGS[param].from))}
+  if(view==="dialer"){$("#dialGo").onclick=()=>dialNumber();$("#dialDel").onclick=()=>{num=num.slice(0,-1);$("#num").innerHTML=esc(num)||"&nbsp;"}}
+  if(view==="camera")startCam();
+  if(view==="tracker")startRadar();
+  if(view==="site"&&SITES[param].n==="Borsa"){drawStocks();stockTimer=setInterval(drawStocks,1500)}
+  if(view==="settings")$("#testIn").onclick=()=>incomingCall();
+  if(view==="internet")$("#url").onkeydown=e=>{if(e.key==="Enter"){const v=e.target.value.toLowerCase();const i=SITES.findIndex(s=>s.n.toLowerCase().includes(v.replace("www.","")));if(i>=0){param=i;go("site")}else toast("Sayfa bulunamadı")}};
+}
+function drawStocks(){
+  const el=$("#stocks");if(!el)return;
+  STOCKS.forEach(s=>{const ch=(Math.random()-.5)*s.p*.02;s.p=Math.max(1,s.p+ch);s.c=ch});
+  el.innerHTML=STOCKS.map(s=>`<div class="tick"><span>${s.s}</span><span class="${s.c>=0?"up":"down"}">$${s.p.toFixed(2)} ${s.c>=0?"▲":"▼"}</span></div>`).join("");
+}
+async function startCam(){
+  try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false});$("#vid").srcObject=camStream}
+  catch{toast("Kamera açılamadı")}
+  $("#shot").onclick=()=>{const v=$("#vid");if(!v||!v.videoWidth)return;const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;const x=c.getContext("2d");x.translate(c.width,0);x.scale(-1,1);x.drawImage(v,0,0);gallery.unshift(c.toDataURL("image/jpeg",.8));const f=$("#flash");f.style.opacity=1;tone([2000],.05,.05);setTimeout(()=>{render()},250)};
+}
+function startRadar(){
+  const cv=$("#rad"),x=cv.getContext("2d"),W=600,R=280;let a=0,dist=900+Math.random()*600,blip={ang:Math.random()*6.28,r:.3+Math.random()*.6};
+  const loop=()=>{
+    x.fillStyle="rgba(6,18,10,.18)";x.fillRect(0,0,W,W);
+    x.strokeStyle="#1f6b3a";x.lineWidth=2;for(let i=1;i<=4;i++){x.beginPath();x.arc(W/2,W/2,R*i/4,0,7);x.stroke()}
+    x.beginPath();x.moveTo(W/2-R,W/2);x.lineTo(W/2+R,W/2);x.moveTo(W/2,W/2-R);x.lineTo(W/2,W/2+R);x.stroke();
+    a+=.04;x.strokeStyle="#5dff8a";x.lineWidth=3;x.beginPath();x.moveTo(W/2,W/2);x.lineTo(W/2+Math.cos(a)*R,W/2+Math.sin(a)*R);x.stroke();
+    const d=((a-blip.ang)%6.283+6.283)%6.283;
+    if(d<.06){dist=Math.max(5,dist-40-Math.random()*60);blip.r=Math.max(.05,dist/1500);blip.ang+=(Math.random()-.5)*.3;const e=$("#dist");if(e)e.textContent=Math.round(dist)+" m";tone([dist<100?1600:1200],.05,.06)}
+    x.fillStyle=`rgba(255,80,80,${Math.max(0,1-d/3)})`;x.beginPath();x.arc(W/2+Math.cos(blip.ang)*R*blip.r,W/2+Math.sin(blip.ang)*R*blip.r,12,0,7);x.fill();
+    radarRAF=requestAnimationFrame(loop)};
+  x.fillStyle="#06120a";x.fillRect(0,0,W,W);loop();
+}
+
+/* ---- gezinme ---- */
+function go(v){stack.push([view,sel]);view=v;sel=0;render()}
+function back(){
+  if(view==="call"||view==="incoming"){hangup();return}
+  if(stack.length){[view,sel]=stack.pop();render()}
+}
+function openApp(i){const t=APPS[i][2];if(t==="quicksave"){toast('<span class="spin"></span>Oyun kaydediliyor…');setTimeout(()=>toast("Kaydedildi ✓"),1400);return}showSearch=false;query="";go(t)}
+
+/* ---- arama akışları ---- */
+function unlockAudio(){audio();if("speechSynthesis"in window){const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u)}}
 function setStatus(s,sub){if(!live())return;callState.status=s;if(sub!==undefined)callState.sub=sub;const e=$("#st");if(e)e.textContent=s;const b=$("#sub");if(b&&sub!==undefined)b.textContent=sub}
 function setIdle(v){callState.idle=v;document.querySelector(".call")?.classList.toggle("idle",v)}
-let showSearch=false;
-
-function go(v){stack.push(view);view=v;render()}
-function back(){if(view==="call"){hangup();return}if(stack.length){view=stack.pop();render()}}
-
-/* --- arama akışı --- */
+function startTimer(){const t0=Date.now();callState.tm=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1e3),e=$("#tm");if(e)e.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")},500)}
 async function startCall(c){
-  audio();
-  if("speechSynthesis" in window){const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u)} // iOS kilidini aç
-  callState={c,status:"Aranıyor…",sub:"",ended:false,idle:false};
-  go("call");
+  unlockAudio();if(callState)hangup();
+  callState={c,status:"Aranıyor…",sub:"",ended:false,idle:false};go("call");
   const files=await findSounds(c.id);
   if(c.mode==="ans"){
-    await ring(1);if(!live())return;
-    startTimer();setStatus("Bağlandı","");
-    if(files.length){await playFile(pick(c.id,files))}
-    else{setStatus("Bağlandı","(sounds/"+c.id+"/ klasörüne ses ekle)");await tone([660],.25,.08)}
+    await ringback(1);if(!live())return;startTimer();setStatus("Bağlandı","");
+    if(files.length)await playFile(pick(c.id,files));else{setStatus("Bağlandı","(sounds/"+c.id+"/ klasörüne ses ekle)");await tone([660],.25,.08)}
     if(!live())return;await wait(600);
   }else{
-    await ring(2+Math.floor(Math.random()*2));if(!live())return;
+    await ringback(2+Math.floor(Math.random()*2));if(!live())return;
     setIdle(true);setStatus("Telesekreter","");
     if(files.length)await playFile(pick(c.id,files));
     else{setStatus("Ulaşılamıyor","Şu anda ulaşılamıyor. Lütfen mesaj bırakın.");await say("Aradığınız kişiye şu anda ulaşılamıyor. Lütfen sinyal sesinden sonra mesaj bırakın.")}
-    if(!live())return;await beep();if(!live())return;
-    setStatus("Mesaj kaydediliyor…");startTimer();await wait(4000);
+    if(!live())return;await beep();if(!live())return;setStatus("Mesaj kaydediliyor…");startTimer();await wait(4000);
   }
   if(live())hangup();
 }
-function startTimer(){const t0=Date.now();callState.tm=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1e3),e=$("#tm");if(e)e.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")},500)}
+async function dialNumber(){
+  if(!num)return;unlockAudio();const n=num;
+  callState={c:{id:"num-"+n,name:n},status:"Aranıyor…",sub:"",ended:false,idle:false};go("call");
+  await ringback(1);if(!live())return;setIdle(true);setStatus("Ulaşılamıyor","Bu numara kullanılmıyor.");
+  for(const f of[950,1400,1800])await tone([f],.33,.08);if(!live())return;
+  await say("Aradığınız numara kullanılmamaktadır.");if(live())hangup();
+}
+async function incomingCall(){
+  if(callState)return;unlockAudio();
+  const c=CONTACTS[Math.floor(Math.random()*CONTACTS.length)];
+  callState={c,status:"Gelen arama",sub:"",ended:false,idle:false,incoming:true};go("incoming");
+  for(let i=0;i<8&&live()&&view==="incoming";i++){if(S.vib&&navigator.vibrate)navigator.vibrate([400,200,400]);await ringtoneOnce(S.ring);await wait(700)}
+  if(live()&&view==="incoming"){setStatus("Cevapsız arama");await wait(1200);hangup()}
+}
+async function acceptIncoming(){
+  if(!live())return;if(navigator.vibrate)navigator.vibrate(0);view="call";render();setStatus("Bağlandı","");startTimer();
+  const files=await findSounds(callState.c.id);
+  if(files.length)await playFile(pick(callState.c.id,files));else{setStatus("Bağlandı","(sounds/"+callState.c.id+"/ klasörüne ses ekle)");await wait(2500)}
+  if(live()){await wait(500);hangup()}
+}
 function hangup(){
   if(!callState)return;callState.ended=true;clearInterval(callState.tm);
   if(curAudio){curAudio.pause();curAudio=null}
-  if("speechSynthesis" in window)speechSynthesis.cancel();
-  callState=null;view=stack.pop()||"contacts";render();
+  if("speechSynthesis"in window)speechSynthesis.cancel();
+  if(navigator.vibrate)navigator.vibrate(0);
+  callState=null;if(stack.length)[view,sel]=stack.pop();else view="home";render();
 }
+function scheduleIncoming(){clearTimeout(incomingTimer);if(!S.incoming)return;incomingTimer=setTimeout(()=>{if(!callState)incomingCall();scheduleIncoming()},(90+Math.random()*150)*1000)}
+scheduleIncoming();
 
-/* --- olaylar --- */
+/* ---- olaylar ---- */
 screen.addEventListener("click",e=>{
-  const a=e.target.closest("[data-app]");if(a){const t=APPS[a.dataset.app][3];if(t){showSearch=false;query="";selIdx=0;go(t)}return}
-  const r=e.target.closest(".row");if(r){
-    const id=r.dataset.id,rows=[...document.querySelectorAll(".row")],i=rows.indexOf(r);
-    if(i===selIdx||matchMedia("(hover:none)").matches){startCall(CONTACTS.find(c=>c.id===id))}
-    else{selIdx=i;rows.forEach((x,j)=>x.classList.toggle("sel",j===i))}
-  }
+  const t=e.target.closest("[data-app],[data-call],[data-msg],[data-mail],[data-job],[data-go],[data-tog],[data-ring],[data-theme],[data-wall],[data-site],[data-key]");
+  if(!t)return;const d=t.dataset;
+  const rows=[...screen.querySelectorAll(".row,.app")],idx=rows.indexOf(t);
+  const touch=matchMedia("(hover:none)").matches;
+  if((d.app||d.call||d.msg||d.mail||d.job||d.site)!==undefined&&idx>=0&&idx!==sel&&!touch){sel=idx;rows.forEach((r,j)=>r.classList.toggle("sel",j===idx));return}
+  if(d.app)openApp(+d.app);
+  else if(d.call)startCall(byId(d.call));
+  else if(d.msg){param=+d.msg;go("thread")}
+  else if(d.mail){param=+d.mail;go("mail")}
+  else if(d.job){toast(JOBS[+d.job][0]+" davetine katıldın");}
+  else if(d.site){param=+d.site;go("site")}
+  else if(d.go)go(d.go);
+  else if(d.tog){S[d.tog]=!S[d.tog];save();if(d.tog==="incoming")scheduleIncoming();render()}
+  else if(d.ring){S.ring=+d.ring;save();render();unlockAudio();ringtoneOnce(S.ring)}
+  else if(d.theme){S.theme=+d.theme;save();render()}
+  else if(d.wall){S.wall=+d.wall;save();render()}
+  else if(d.key!==undefined){num+=d.key;$("#num").textContent=num;unlockAudio();const f={1:[697,1209],2:[697,1336],3:[697,1477],4:[770,1209],5:[770,1336],6:[770,1477],7:[852,1209],8:[852,1336],9:[852,1477],"*":[941,1209],0:[941,1336],"#":[941,1477]}[d.key];tone(f,.12,.06)}
 });
-$("#nHome").onclick=()=>{if(callState)hangup();stack=[];view="home";render()};
+$("#nHome").onclick=()=>{if(callState)hangup();stack=[];view="home";sel=0;render()};
 $("#nBack").onclick=back;
-$("#nSearch").onclick=()=>{if(view!=="contacts"){if(callState)hangup();stack=["home"];view="contacts"}showSearch=!showSearch;if(!showSearch)query="";render();$("#q")?.focus()};
+$("#nSearch").onclick=()=>{
+  if(callState)return;
+  if(view==="contacts"){showSearch=!showSearch;if(!showSearch)query="";render();$("#q")?.focus()}
+  else{num="";go("dialer")}
+};
 document.addEventListener("keydown",e=>{
-  if(view!=="contacts"||e.target.id==="q")return;const n=document.querySelectorAll(".row").length;
-  if(e.key==="ArrowDown"){selIdx=Math.min(n-1,selIdx+1);render();document.querySelector(".row.sel")?.scrollIntoView({block:"nearest"})}
-  if(e.key==="ArrowUp"){selIdx=Math.max(0,selIdx-1);render();document.querySelector(".row.sel")?.scrollIntoView({block:"nearest"})}
-  if(e.key==="Enter"){const r=document.querySelector(".row.sel");if(r)r.click(),r.click()}
+  if(e.target.tagName==="INPUT")return;
+  const rows=[...screen.querySelectorAll(".row,.app")];
+  const step=view==="home"?{ArrowRight:1,ArrowLeft:-1,ArrowDown:3,ArrowUp:-3}:{ArrowDown:1,ArrowUp:-1};
+  if(step[e.key]&&rows.length){sel=Math.max(0,Math.min(rows.length-1,sel+step[e.key]));rows.forEach((r,j)=>r.classList.toggle("sel",j===sel));rows[sel].scrollIntoView({block:"nearest"});e.preventDefault()}
+  if(e.key==="Enter"&&rows[sel])rows[sel].click();
   if(e.key==="Backspace"||e.key==="Escape")back();
 });
 render();
