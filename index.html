@@ -231,8 +231,15 @@ async function ringtoneOnce(i){
   else if(i===2){for(const f of[523,659,784,1047,784,659])await tone([f],.13,.1,"triangle")}
   else{await tone([440,660],.25,.07,"square");await tone([330,495],.25,.07,"square")}
 }
-let curAudio=null;
-function playFile(u){return new Promise(r=>{const a=new Audio(u);curAudio=a;a.onended=a.onerror=()=>{curAudio=null;r()};a.play().catch(()=>{curAudio=null;r()})})}
+let curAudio=null;const bufCache={};
+function playEl(u){return new Promise(r=>{const a=new Audio(u);curAudio=a;a.onended=a.onerror=()=>{curAudio=null;r()};a.play().catch(()=>{curAudio=null;r()})})}
+async function playFile(u){
+  try{
+    const a=audio();let b=bufCache[u];
+    if(!b){const ab=await(await fetch(u)).arrayBuffer();b=bufCache[u]=await new Promise((ok,no)=>a.decodeAudioData(ab,ok,no))}
+    return await new Promise(r=>{const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.onended=()=>{if(curAudio===s)curAudio=null;r()};curAudio=s;s.start()});
+  }catch(e){return playEl(u)}
+}
 function say(text){return new Promise(r=>{if(!("speechSynthesis"in window))return r();const u=new SpeechSynthesisUtterance(text);u.lang="tr-TR";u.onend=u.onerror=r;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(r,9000)})}
 function pick(id,l){if(l.length===1)return l[0];let i;do{i=Math.floor(Math.random()*l.length)}while(i===lastPick[id]);lastPick[id]=i;return l[i]}
 const live=()=>callState&&!callState.ended;
@@ -454,7 +461,7 @@ async function acceptIncoming(){
 }
 function hangup(){
   if(!callState)return;callState.ended=true;clearInterval(callState.tm);callState.pick?.(null);
-  if(curAudio){curAudio.pause();curAudio=null}
+  if(curAudio){try{curAudio.stop?curAudio.stop():curAudio.pause()}catch{}curAudio=null}
   if("speechSynthesis"in window)speechSynthesis.cancel();
   if(navigator.vibrate)navigator.vibrate(0);
   callState=null;if(stack.length)[view,sel]=stack.pop();else view="home";render();
